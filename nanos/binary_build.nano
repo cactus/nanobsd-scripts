@@ -235,8 +235,8 @@ cust_install_updates ( ) (
 )
 
 zfs_tunables() (
-    cat /home/elij/projects/nanobsd/loader.conf >> ${NANO_WORLDDIR}/boot/loader.conf
-    #cp /home/elij/projects/nanobsd/sysctl.conf ${NANO_WORLDDIR}/etc/sysctl.conf
+    cat /home/elij/projects/nanobsd/configs/loader.conf >> ${NANO_WORLDDIR}/boot/loader.conf
+    #cp /home/elij/projects/nanobsd/configs/sysctl.conf ${NANO_WORLDDIR}/etc/sysctl.conf
 )
 
 install_packages () (
