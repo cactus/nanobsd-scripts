@@ -1,0 +1,53 @@
+NANO_NAME=zfs-storage-appliance
+NANO_SRC="/usr/src"
+NANO_OBJ="/home/elij/projects/nanobsd/output/"
+NANO_DISKIMGDIR="/home/elij/projects/nanobsd/output/"
+NANO_ARCH=amd64
+NANO_KERNEL=GENERIC
+NANO_IMAGES=2
+
+CONF_INSTALL='
+WITHOUT_BLUETOOTH=YES
+WITHOUT_CALENDAR=YES
+WITHOUT_CVS=YES
+WITHOUT_FORTRAN=YES
+WITHOUT_EXAMPLES=YES
+WITHOUT_HTML=YES
+WITHOUT_INSTALLLIB=YES
+WITHOUT_LPR=YES
+WITHOUT_MISC=YES
+WITHOUT_SENDMAIL=YES
+WITHOUT_SHARE=YES
+WITHOUT_SHAREDOCS=YES
+'
+
+CONF_WORLD='
+WITH_PKGNG=yes
+WITHOUT_LIB32=yes
+WITHOUT_X11=yes
+WITHOUT_BIND=YES
+WITHOUT_KERBEROS=YES
+WITHOUT_GAMES=YES
+WITHOUT_RESCUE=YES
+WITHOUT_INFO=YES
+'
+
+FlashDevice generic 4G
+
+zfs_tunables() (
+    cp /home/elij/projects/nanobsd/loader.conf ${NANO_WORLDDIR}/boot/loader.conf
+    #cp /home/elij/projects/nanobsd/sysctl.conf ${NANO_WORLDDIR}/etc/sysctl.conf
+)
+
+install_packages () (
+    mkdir -p ${NANO_WORLDDIR}/packages
+    cp /home/elij/projects/nanobsd/packages/* ${NANO_WORLDDIR}/packages
+    chroot ${NANO_WORLDDIR} sh -c 'cd packages; pkg_add -v *;cd ..;'
+    rm -rf ${NANO_WORLDDIR}/packages
+)
+
+customize_cmd cust_install_files
+customize_cmd install_packages
+customize_cmd cust_allow_ssh_root
+customize_cmd zfs_tunables
+
