@@ -28,10 +28,12 @@
 # SUCH DAMAGE.
 #
 
+PROJECT_DIR=/home/elij/projects/nanobsd
+
 # Standard NanoBSD configuration options go here
 NANO_NAME=binary_build
 
-NANO_OBJ="/home/elij/projects/nanobsd/output"
+NANO_OBJ="${PROJECT_DIR}/output"
 NANO_INIT_IMG2=0
 # Size of the /etc ramdisk in 512 bytes sectors
 NANO_RAM_ETCSIZE=51200
@@ -46,7 +48,7 @@ NANO_LABEL="keg"
 #                 are located. This is where you downloaded the
 #                 tarballs or the freebsd-dist directory on your
 #                 installation media, without a trailing slash.
-INSTALLFILESDIR="/home/elij/projects/nanobsd/dists"
+INSTALLFILESDIR="${PROJECT_DIR}/dists"
 
 # WORLD_TXZ the list of tarballs that will be expanded from the
 #           installation media; edit this to install additional
@@ -235,12 +237,14 @@ cust_install_updates ( ) (
 )
 
 zfs_tunables() (
-    cat /home/elij/projects/nanobsd/configs/loader.conf >> ${NANO_WORLDDIR}/boot/loader.conf
-    #cp /home/elij/projects/nanobsd/configs/sysctl.conf ${NANO_WORLDDIR}/etc/sysctl.conf
+    cat ${PROJECT_DIR}/configs/loader.conf >> ${NANO_WORLDDIR}/boot/loader.conf
+    #cp ${PROJECT_DIR}/configs/sysctl.conf ${NANO_WORLDDIR}/etc/sysctl.conf
 )
 
 install_packages () (
-    env PACKAGESITE='pkg+https://nullage.wundrd.net/pkgs/${ABI}' SSL_NO_VERIFY_HOSTNAME="true" SSL_NO_VERIFY_PEER="true" \
+    env PACKAGESITE='pkg+https://nullage.wundrd.net/pkgs/${ABI}' \
+        SSL_NO_VERIFY_HOSTNAME="true" \
+        SSL_NO_VERIFY_PEER="true" \
         pkg -c ${NANO_WORLDDIR} install -y ${PACKAGELIST}
     pkg -c ${NANO_WORLDDIR} clean -a -y
     rm -f ${NANO_WORLDDIR}/var/db/pkg/repo-*.sqlite
