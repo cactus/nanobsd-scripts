@@ -89,9 +89,7 @@ ca_root_nss
 curl
 git
 howl
-htop
 iperf
-lsof
 netatalk3
 ngrep
 openssl
@@ -106,6 +104,8 @@ tmux
 vim-lite
 zfs-stats
 '
+#htop
+#lsof
 
 ##########################################################
 #
@@ -242,13 +242,22 @@ zfs_tunables() (
 )
 
 install_packages () (
-    env PACKAGESITE='pkg+https://nullage.wundrd.net/pkgs/${ABI}' \
-        SSL_NO_VERIFY_HOSTNAME="true" \
+    mkdir -p ${NANO_WORLDDIR}/usr/local/etc/pkg/repos
+    cp ${PROJECT_DIR}/configs/nullage.conf  ${NANO_WORLDDIR}/usr/local/etc/pkg/repos/
+    env SSL_NO_VERIFY_HOSTNAME="true" \
         SSL_NO_VERIFY_PEER="true" \
-        pkg -c ${NANO_WORLDDIR} install -y ${PACKAGELIST}
-    pkg -c ${NANO_WORLDDIR} clean -a -y
+        pkg -d -c ${NANO_WORLDDIR} install -r nullage -y ${PACKAGELIST}
+    env SSL_NO_VERIFY_HOSTNAME="true" \
+        SSL_NO_VERIFY_PEER="true" \
+        pkg -d -c ${NANO_WORLDDIR} clean -a -y
     rm -f ${NANO_WORLDDIR}/var/db/pkg/repo-*.sqlite
 )
+
+reorg_heir() {
+    cd ${NANO_WORLDDIR}
+    mv /bin/* /usr/bin/
+    mv /sbin/* /usr/sbin/
+}
 
 htop_fix_fstab() {
     cd ${NANO_WORLDDIR}
