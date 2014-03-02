@@ -28,7 +28,7 @@
 # SUCH DAMAGE.
 #
 
-PROJECT_DIR=/home/elij/projects/nanobsd
+PROJECT_DIR=/home/elij/projects/nanobsd-scripts
 
 # Standard NanoBSD configuration options go here
 NANO_NAME=binary_build
@@ -242,15 +242,17 @@ zfs_tunables() (
 )
 
 install_packages () (
-    mkdir -p ${NANO_WORLDDIR}/usr/local/etc/pkg/repos
-    cp ${PROJECT_DIR}/configs/nullage.conf  ${NANO_WORLDDIR}/usr/local/etc/pkg/repos/
+    cp /etc/resolv.conf ${NANO_WORLDDIR}/etc/
+    cp ${PROJECT_DIR}/configs/nullage.conf ${NANO_WORLDDIR}/etc/pkg/
     env SSL_NO_VERIFY_HOSTNAME="true" \
         SSL_NO_VERIFY_PEER="true" \
-        pkg -d -c ${NANO_WORLDDIR} install -r nullage -y ${PACKAGELIST}
+        pkg -c ${NANO_WORLDDIR} install -r nullage -y ${PACKAGELIST}
     env SSL_NO_VERIFY_HOSTNAME="true" \
         SSL_NO_VERIFY_PEER="true" \
-        pkg -d -c ${NANO_WORLDDIR} clean -a -y
+        pkg -c ${NANO_WORLDDIR} clean -a -y
     rm -f ${NANO_WORLDDIR}/var/db/pkg/repo-*.sqlite
+    rm -f ${NANO_WORLDDIR}/etc/pkg/nullage.conf
+    rm -f ${NANO_WORLDDIR}/etc/resolv.conf
 )
 
 reorg_heir() {
