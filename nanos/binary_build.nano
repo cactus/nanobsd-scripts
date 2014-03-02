@@ -34,6 +34,7 @@ PROJECT_DIR=/home/elij/projects/nanobsd-scripts
 NANO_NAME=binary_build
 
 NANO_OBJ="${PROJECT_DIR}/output"
+NANO_IMAGES=2
 NANO_INIT_IMG2=0
 # Size of the /etc ramdisk in 512 bytes sectors
 NANO_RAM_ETCSIZE=51200
@@ -257,8 +258,13 @@ install_packages () (
 
 reorg_heir() {
     cd ${NANO_WORLDDIR}
-    mv /bin/* /usr/bin/
-    mv /sbin/* /usr/sbin/
+    chflags -R noschg bin/ sbin/
+    mv bin/* usr/bin/
+    rm -rf bin
+    ln -s usr/bin bin
+    mv sbin/* usr/sbin/
+    rm -rf sbin
+    ln -s usr/sbin sbin
 }
 
 htop_fix_fstab() {
@@ -276,4 +282,4 @@ customize_cmd cust_allow_ssh_root
 customize_cmd install_packages
 customize_cmd zfs_tunables
 customize_cmd htop_fix_fstab
-
+customize_cmd reorg_heir
